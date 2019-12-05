@@ -20,15 +20,15 @@
         width: 100%;
         margin: 0;
         padding: 0;
+        table-layout: fixed;
       }
       td {
         padding: 2px;
+        width: 50%;
+        height: 33px;
       }
       tr td:first-child {
         text-align: right;
-      }
-      tr td:last-child {
-        width: 1px; /* Smallest size that contains content */
       }
       input[type=text], button {
         width: 135px;
@@ -47,15 +47,15 @@
           <td><input id="scale" type="text" /></td>
         </tr>
         <tr>
-          <td><label for="viewDistance">View Distance</label></td>
+          <td><label for="viewDistance">Viewing Distance</label></td>
           <td><input id="viewDistance" type="text" /></td>
         </tr>
         <tr>
           <td></td>
-          <td><button>Pick Scaled Plane</button></td>
+          <td><button>Pick Scale Plane</button></td>
         </tr>
         <tr>
-          <td>Calculated Height</td>
+          <td>Image Height</td>
           <td id="outputHeight">...</td>
         </tr>
         <tr>

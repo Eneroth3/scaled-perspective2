@@ -66,7 +66,7 @@ module Eneroth
           resizable:       false,
           style:           UI::HtmlDialog::STYLE_DIALOG,
           width:           320,
-          height:          250,
+          height:          260,
           left:            200,
           top:             100
         )
