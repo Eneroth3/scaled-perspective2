@@ -2,11 +2,11 @@
 
 module Eneroth
   module ScaledPerspective2
-    Sketchup.require "#{PLUGIN_ROOT}/vendor/scale"
+    Sketchup.require "#{PLUGIN_ROOT}/scaled_perspective"
     ### Sketchup.require "#{PLUGIN_ROOT}/observers" # TODO: Set up view observer.
 
-    # User interface for handling scaled perspectives.
-    module Interface
+    # Dialog for handling scaled perspective settings.
+    module Dialog
       # Show dialog.
       def self.show
         if visible?

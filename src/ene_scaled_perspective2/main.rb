@@ -2,7 +2,7 @@
 
 module Eneroth
   module ScaledPerspective2
-    Sketchup.require "#{PLUGIN_ROOT}/interface"
+    Sketchup.require "#{PLUGIN_ROOT}/dialog"
 
     # Reload extension.
     #
@@ -29,8 +29,8 @@ module Eneroth
     unless @loaded
       @loaded = true
 
-      cmd = UI::Command.new(EXTENSION.name) { Interface.toggle }
-      cmd.set_validation_proc { Interface.command_state }
+      cmd = UI::Command.new(EXTENSION.name) { Dialog.toggle }
+      cmd.set_validation_proc { Dialog.command_state }
 
       UI.menu("Plugins").add_item(cmd)
     end
