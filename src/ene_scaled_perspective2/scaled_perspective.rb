@@ -56,9 +56,9 @@ module Eneroth
       #
       # @param viewing_distance [Length]
       def self.viewing_distance=(viewing_distance)
+        # SU BUG: Swapping the order of these lines breaks plugin. TODO: Report!
+        multiply_plane_extents(self.viewing_distance / viewing_distance)
         self.target_distance = viewing_distance / @scale.factor
-        e = self.viewing_distance / viewing_distance
-        camera.fov = Math.atan(Math.tan(camera.fov.degrees / 2) * e).radians * 2
       end
 
       # Calculate height exported image must have for scale to apply.
@@ -72,18 +72,21 @@ module Eneroth
         (target_plane_height * @scale.factor).to_l
       end
 
-      # Adjust camera position and field of view for a new size of the scaled
-      # view, while retaining the scale and viewing distance.
+      # Adjust field of view for a new size of the scaled view, while retaining
+      # the scale and viewing distance.
       #
       # @param image_height [Length]
       def self.image_height=(image_height)
-        # TODO: Implement.
-        # Keep scaling
-        # Keep viewing distance
-        # Change camera position and fov.
+        multiply_plane_extents(image_height / self.image_height)
       end
 
       # Private
+
+      def self.multiply_plane_extents(factor)
+        camera.fov =
+          Math.atan(Math.tan(camera.fov.degrees / 2) * factor).radians * 2
+      end
+      private_class_method :multiply_plane_extents
 
       def self.target_plane_height
         # REVIEW: Currently width if fov_is_height? is false.
