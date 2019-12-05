@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>TITLE</title>
+    <script src="vendor/dialogs/jquery-1.12.4.js"></script>
+    <script src="vendor/dialogs/controls.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor/dialogs/style.css">
+    <script>
+      // Disable context menu.
+      // TODO: Enable diable.
+      // window.oncontextmenu = function (e) { e.preventDefault() };
+      window.onerror = function(message, source, lineno, colno, error) {
+        alert("source:" + lineno + ":" + colno + "\n\n" + message);
+      }
+      window.onload = function() { sketchup.ready(); };
+    </script>
+    <style>
+      table {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      td {
+        padding: 2px;
+      }
+      tr td:first-child {
+        text-align: right;
+      }
+      tr td:last-child {
+        width: 1px; /* Smallest size that contains content */
+      }
+      input[type=text], button {
+        width: 135px;
+        margin: 0;
+      }
+      #outputHeight {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dlg-content-area">
+      <table>
+        <tr>
+          <td><label for="scale">Scale</label></td>
+          <td><input id="scale" type="text" /></td>
+        </tr>
+        <tr>
+          <td><label for="viewDistance">View Distance</label></td>
+          <td><input id="viewDistance" type="text" /></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button>Pick Scaled Plane</button></td>
+        </tr>
+        <tr>
+          <td>Calculated Height</td>
+          <td id="outputHeight">...</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button>Send to LayOut</button></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
