@@ -51,14 +51,14 @@ module Eneroth
       end
 
       # Adjust camera position and field of view for perspective to be correct
-      # at given viewing distance from image.
+      # at given viewing distance from image, while retaining the extents of the
+      # target plane.
       #
       # @param viewing_distance [Length]
       def self.viewing_distance=(viewing_distance)
-        e = viewing_distance / self.viewing_distance
-        # FIXME: Sets fov wrongly.
-        camera.fov = Math.atan(Math.tan(camera.fov.degrees / 2) * 2 * e).radians
         self.target_distance = viewing_distance / @scale.factor
+        e = self.viewing_distance / viewing_distance
+        camera.fov = Math.atan(Math.tan(camera.fov.degrees / 2) * e).radians * 2
       end
 
       # Calculate height exported image must have for scale to apply.
@@ -72,7 +72,8 @@ module Eneroth
         (target_plane_height * @scale.factor).to_l
       end
 
-      # Adjust camera position and field of view
+      # Adjust camera position and field of view for a new size of the scaled
+      # view, while retaining the scale and viewing distance.
       #
       # @param image_height [Length]
       def self.image_height=(image_height)
