@@ -64,10 +64,6 @@ module Eneroth
       #
       # @return [Length]
       def self.image_height
-        # REVIEW: Change to image_dimension and add an
-        # imagde_dimension_is_height? getter to account for views where
-        # fov_is_height? ?
-
         (target_plane_height * @scale.factor).to_l
       end
 
@@ -88,7 +84,7 @@ module Eneroth
       private_class_method :multiply_plane_extents
 
       def self.target_plane_height
-        # REVIEW: Currently width if fov_is_height? is false.
+        # TODO: When fov_is_height? is false, corerct for it.
         # TODO: Support parallel projection.
         target_distance * Math.tan(camera.fov.degrees / 2) * 2
       end
