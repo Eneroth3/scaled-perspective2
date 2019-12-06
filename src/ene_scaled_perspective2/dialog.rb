@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "json"
+
 module Eneroth
   module ScaledPerspective2
     Sketchup.require "#{PLUGIN_ROOT}/scaled_perspective"
@@ -78,14 +80,19 @@ module Eneroth
       # writing. Only update other fields.
       # User feedback when invalid values are entered.
 
+      # Update all dialog fields.
+      # Done on show or when view changes.
       def self.update_dialog
         @dialog.execute_script(
-          "scale = #{ScaledPerspective.scale.to_s.to_json};"\
-          "viewDistance = #{ScaledPerspective.viewing_distance.to_s.to_json};"\
-          "imageHeight = #{ScaledPerspective.image_height.to_s.to_json};"\
-          "canSetViewDistance =#{ScaledPerspective.can_set_viewing_distance?};"\
-          "canSetImageHeight = #{ScaledPerspective.can_set_image_height?};"\
-          "updateForm();"
+          "scaleField.value = #{ScaledPerspective.scale.to_s.to_json};"\
+          "viewDistanceField.value = "\
+          "#{ScaledPerspective.viewing_distance.to_s.to_json};"\
+          "viewDistanceField.disabled = "\
+          "#{!ScaledPerspective.can_set_viewing_distance?};"\
+          "imageHeightField.value = "\
+          "#{ScaledPerspective.image_height.to_s.to_json};"\
+          "imageHeightField.disabled = "\
+          "#{!ScaledPerspective.can_set_image_height?};"\
         )
       end
       private_class_method :update_dialog

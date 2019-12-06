@@ -13,25 +13,18 @@
       window.onerror = function(message, source, lineno, colno, error) {
         alert("source:" + lineno + ":" + colno + "\n\n" + message);
       }
-      window.onload = function() { sketchup.ready(); };
 
-      var scale = '';
-      var viewDistance = '';
-      var imageHeight = '';
-      var canSetViewDistance;
-      var canSetImageHeight;
+      var scaleField;
+      var viewDistanceField;
+      var imageHeightField;
 
-      function updateForm() {
-        var scaleField = document.getElementById('scale');
-        var viewDistanceField = document.getElementById('viewDistance');
-        var imageHeightField = document.getElementById('imageHeight');
+      window.onload = function() {
+        scaleField = document.getElementById('scale');
+        viewDistanceField = document.getElementById('viewDistance');
+        imageHeightField = document.getElementById('imageHeight');
 
-        scaleField.value = scale;
-        viewDistanceField.value = viewDistance;
-        viewDistanceField.disabled = !canSetViewDistance;
-        imageHeightField.value = imageHeight;
-        imageHeightField.disabled = !canSetImageHeight;
-      }
+        sketchup.ready();
+      };
     </script>
     <style>
       table {
