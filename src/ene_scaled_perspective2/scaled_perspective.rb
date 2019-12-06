@@ -23,6 +23,8 @@ module Eneroth
       #
       # @param scale [Scale]
       def self.scale=(scale)
+        raise ArgumentError "Invalid scale." unless scale.valid?
+
         @scale = scale
       end
 
