@@ -26,14 +26,14 @@ module Eneroth
         @scale = scale
       end
 
-      # Get point scale applies at.
+      # Get point scale applies at. May be nil.
       #
       # @return [Geom::Point3d, nil]
       def self.target
         @target
       end
 
-      # Set point scale applies at.
+      # Set point scale applies at. May be nil.
       #
       # @param target [Geom::Point3d, nil]
       def self.target=(target)
@@ -45,8 +45,7 @@ module Eneroth
       #
       # @return [Length, nil]
       def self.viewing_distance
-        return unless @target
-        return unless camera.perspective?
+        return unless can_set_viewing_distance?
 
         (target_distance * @scale.factor).to_l
       end
@@ -57,14 +56,18 @@ module Eneroth
       #
       # @param viewing_distance [Length]
       def self.viewing_distance=(viewing_distance)
+        raise "Cannot be set in current state." unless can_set_viewing_distance?
+
         multiply_plane_extents(self.viewing_distance / viewing_distance)
         self.target_distance = viewing_distance / @scale.factor
       end
 
       # Calculate height exported image must have for scale to apply.
       #
-      # @return [Length]
+      # @return [Length, nil]
       def self.image_height
+        return unless can_set_image_height?
+
         (target_plane_height * @scale.factor).to_l
       end
 
@@ -73,7 +76,25 @@ module Eneroth
       #
       # @param image_height [Length]
       def self.image_height=(image_height)
+        raise "Cannot be set in current state." unless can_set_image_height?
+
         multiply_plane_extents(image_height / self.image_height)
+      end
+
+      # Check whether viewing distance can be set. In parallel projection or
+      # without a defined target the viewing distance cannot be set.
+      #
+      # @return [Boolean]
+      def self.can_set_viewing_distance?
+        camera.perspective? && !!@target
+      end
+
+      # Check whether image height can be set. In perspective mode without a
+      # defined target the image height cannot be set.
+      #
+      # @return [Boolean]
+      def self.can_set_image_height?
+        !camera.perspective? || !!@target
       end
 
       # Private
