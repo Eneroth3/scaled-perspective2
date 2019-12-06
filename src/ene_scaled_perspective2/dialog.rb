@@ -104,18 +104,30 @@ module Eneroth
       private_class_method :scale=
 
       def self.viewing_distance=(viewing_distance)
-        ScaledPerspective.viewing_distance = viewing_distance.to_l
+        begin
+          viewing_distance = viewing_distance.to_l
+        rescue ArgumentError
+          @dialog.execute_script("markAsInvalid(viewDistanceField);")
+          return
+        end
+        return if viewing_distance == 0
+
         # Dialog gets updated due to view change.
-      rescue ArgumentError
-        @dialog.execute_script("markAsInvalid(viewDistanceField);")
+        ScaledPerspective.viewing_distance = viewing_distance
       end
       private_class_method :viewing_distance=
 
       def self.image_height=(image_height)
-        ScaledPerspective.image_height = image_height.to_l
+        begin
+          image_height = image_height.to_l
+        rescue ArgumentError
+          @dialog.execute_script("markAsInvalid(imageHeightField);")
+          return
+        end
+        return if image_height == 0
+
         # Dialog gets updated due to view change.
-      rescue ArgumentError
-        @dialog.execute_script("markAsInvalid(imageHeightField);")
+        ScaledPerspective.image_height = image_height
       end
       private_class_method :image_height=
     end
