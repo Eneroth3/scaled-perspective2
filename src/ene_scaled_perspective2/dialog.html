@@ -30,7 +30,15 @@
         viewDistanceField.disabled = viewDistanceDisabled;
         imageHeightField.disabled = imageHeightDisabled;
 
+        scaleField.classList.remove("invalid");
+        viewDistanceField.classList.remove("invalid");
+        imageHeightField.classList.remove("invalid");
+
         triggeringField = null;
+      }
+
+      function markAsInvalid(field) {
+        field.classList.add("invalid");
       }
 
       window.onload = function() {
@@ -80,6 +88,9 @@
       }
       #outputHeight {
         font-weight: bold;
+      }
+      .invalid {
+        border-color: #DF191B !important;
       }
     </style>
   </head>

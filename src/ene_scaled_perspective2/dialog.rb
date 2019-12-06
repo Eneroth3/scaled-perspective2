@@ -90,9 +90,11 @@ module Eneroth
       private_class_method :update_dialog
 
       def self.scale=(scale)
-        # TODO: Show red border on field if invalid.
         scale = Scale.new(scale)
-        return unless scale.valid?
+        unless scale.valid?
+          @dialog.execute_script("markAsInvalid(scaleField);")
+          return
+        end
 
         ScaledPerspective.scale = scale
         # Need to explicitly update dialog in this setter as it doesn't trigger
@@ -102,14 +104,18 @@ module Eneroth
       private_class_method :scale=
 
       def self.viewing_distance=(viewing_distance)
-        # TODO: Show red border on field if invalid.
         ScaledPerspective.viewing_distance = viewing_distance.to_l
+        # Dialog gets updated due to view change.
+      rescue ArgumentError
+        @dialog.execute_script("markAsInvalid(viewDistanceField);")
       end
       private_class_method :viewing_distance=
 
       def self.image_height=(image_height)
-        # TODO: Show red border on field if invalid.
         ScaledPerspective.image_height = image_height.to_l
+        # Dialog gets updated due to view change.
+      rescue ArgumentError
+        @dialog.execute_script("markAsInvalid(imageHeightField);")
       end
       private_class_method :image_height=
     end
