@@ -105,7 +105,7 @@ module Eneroth
         # TODO: Show red border on field if invalid.
         ScaledPerspective.viewing_distance = viewing_distance.to_l
       end
-      private_class_method :scale=
+      private_class_method :viewing_distance=
 
       def self.image_height=(image_height)
         # TODO: Show red border on field if invalid.
