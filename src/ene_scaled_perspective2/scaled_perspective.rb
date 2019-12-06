@@ -56,7 +56,6 @@ module Eneroth
       #
       # @param viewing_distance [Length]
       def self.viewing_distance=(viewing_distance)
-        # SU BUG: Swapping the order of these lines breaks plugin. TODO: Report!
         multiply_plane_extents(self.viewing_distance / viewing_distance)
         self.target_distance = viewing_distance / @scale.factor
       end
