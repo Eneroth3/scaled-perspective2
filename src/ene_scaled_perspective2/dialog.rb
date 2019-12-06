@@ -5,7 +5,6 @@ require "json"
 module Eneroth
   module ScaledPerspective2
     Sketchup.require "#{PLUGIN_ROOT}/scaled_perspective"
-    ### Sketchup.require "#{PLUGIN_ROOT}/observers" # TODO: Set up view observer.
 
     # Dialog for handling scaled perspective settings.
     module Dialog
@@ -76,11 +75,6 @@ module Eneroth
         )
       end
       private_class_method :create_dialog
-
-      # TODO: Let user enter values.
-      # When entering value in one field, don't update and overwrite as user is
-      # writing. Only update other fields.
-      # User feedback when invalid values are entered.
 
       # Update all dialog fields.
       # Done on show or when view changes.
