@@ -23,10 +23,9 @@
         viewDistanceField = document.getElementById('viewDistance');
         imageHeightField = document.getElementById('imageHeight');
 
-        // TODO: Do on key down.
-        scaleField.onchange = setScale;
-        viewDistanceField.onchange = setViewDistance;
-        imageHeightField.onchange = setImageHeight;
+        scaleField.onchange = scaleField.onkeyup = setScale;
+        viewDistanceField.onchange = viewDistanceField.onkeyup = setViewDistance;
+        imageHeightField.onchange = imageHeightField.onkeyup = setImageHeight;
 
         sketchup.ready();
       };

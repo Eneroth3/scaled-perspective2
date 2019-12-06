@@ -76,8 +76,6 @@ module Eneroth
       end
       private_class_method :create_dialog
 
-      # Update all dialog fields.
-      # Done on show or when view changes.
       def self.update_dialog
         @dialog.execute_script(
           "scaleField.value = #{ScaledPerspective.scale.to_s.to_json};"\
@@ -97,25 +95,17 @@ module Eneroth
         # TODO: Show red border on field if invalid.
         scale = Scale.new(scale)
         return unless scale.valid?
-        ScaledPerspective.scale = scale
 
-        @dialog.execute_script(
-          "viewDistanceField.value = "\
-          "#{ScaledPerspective.viewing_distance.to_s.to_json};"\
-          "imageHeightField.value = "\
-          "#{ScaledPerspective.image_height.to_s.to_json};"
-        )
+        ScaledPerspective.scale = scale
+        # Need to explicitly update dialog in this setter as it doesn't trigger
+        # a view update.
+        update_dialog
       end
       private_class_method :scale=
 
       def self.viewing_distance=(viewing_distance)
         # TODO: Show red border on field if invalid.
         ScaledPerspective.viewing_distance = viewing_distance.to_l
-
-        @dialog.execute_script(
-          "imageHeightField.value = "\
-          "#{ScaledPerspective.image_height.to_s.to_json};"
-        )
       end
       private_class_method :scale=
 
