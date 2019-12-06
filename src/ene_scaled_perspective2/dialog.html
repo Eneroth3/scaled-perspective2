@@ -18,6 +18,21 @@
       var viewDistanceField;
       var imageHeightField;
 
+      // Field that triggered the update, if any.
+      // When typing a field triggers an update, that specific field shouldn't
+      // be updated.
+      var triggeringField;
+
+      function updateFields(scale, viewDistance, imageHeight, viewDistanceDisabled, imageHeightDisabled) {
+        if (triggeringField != scaleField) scaleField.value = scale;
+        if (triggeringField != viewDistanceField) viewDistanceField.value = viewDistance;
+        if (triggeringField != imageHeightField) imageHeightField.value = imageHeight;
+        viewDistanceField.disabled = viewDistanceDisabled;
+        imageHeightField.disabled = imageHeightDisabled;
+
+        triggeringField = null;
+      }
+
       window.onload = function() {
         scaleField = document.getElementById('scale');
         viewDistanceField = document.getElementById('viewDistance');
@@ -30,15 +45,18 @@
         sketchup.ready();
       };
 
-      function setScale() {
+      function setScale(event) {
+        if (event.type == "keyup") triggeringField = this;
         sketchup.scale(this.value);
       }
 
-      function setViewDistance() {
+      function setViewDistance(event) {
+        if (event.type == "keyup") triggeringField = this;
         sketchup.viewDistance(this.value);
       }
 
-      function setImageHeight() {
+      function setImageHeight(event) {
+        if (event.type == "keyup") triggeringField = this;
         sketchup.imageHeight(this.value);
       }
     </script>

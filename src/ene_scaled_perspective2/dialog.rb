@@ -78,15 +78,13 @@ module Eneroth
 
       def self.update_dialog
         @dialog.execute_script(
-          "scaleField.value = #{ScaledPerspective.scale.to_s.to_json};"\
-          "viewDistanceField.value = "\
-          "#{ScaledPerspective.viewing_distance.to_s.to_json};"\
-          "viewDistanceField.disabled = "\
-          "#{!ScaledPerspective.can_set_viewing_distance?};"\
-          "imageHeightField.value = "\
-          "#{ScaledPerspective.image_height.to_s.to_json};"\
-          "imageHeightField.disabled = "\
-          "#{!ScaledPerspective.can_set_image_height?};"
+          "updateFields("\
+          "#{ScaledPerspective.scale.to_s.to_json},"\
+          "#{ScaledPerspective.viewing_distance.to_s.to_json},"\
+          "#{ScaledPerspective.image_height.to_s.to_json},"\
+          "#{!ScaledPerspective.can_set_viewing_distance?},"\
+          "#{!ScaledPerspective.can_set_image_height?},"\
+          ");"
         )
       end
       private_class_method :update_dialog
