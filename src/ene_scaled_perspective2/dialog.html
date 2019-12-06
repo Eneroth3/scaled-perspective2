@@ -23,8 +23,25 @@
         viewDistanceField = document.getElementById('viewDistance');
         imageHeightField = document.getElementById('imageHeight');
 
+        // TODO: Do on key down.
+        scaleField.onchange = setScale;
+        viewDistanceField.onchange = setViewDistance;
+        imageHeightField.onchange = setImageHeight;
+
         sketchup.ready();
       };
+
+      function setScale() {
+        sketchup.scale(this.value);
+      }
+
+      function setViewDistance() {
+        sketchup.viewDistance(this.value);
+      }
+
+      function setImageHeight() {
+        sketchup.imageHeight(this.value);
+      }
     </script>
     <style>
       table {

@@ -57,7 +57,9 @@ module Eneroth
 
       def self.attach_callbacks
         @dialog.add_action_callback("ready") { update_dialog }
-        # TODO: Add other callbacks.
+        @dialog.add_action_callback("scale") { |_, v| self.scale = v }
+        @dialog.add_action_callback("viewDistance") { |_, v| self.viewing_distance = v }
+        @dialog.add_action_callback("imageHeight") { |_, v| self.image_height = v }
       end
       private_class_method :attach_callbacks
 
@@ -92,10 +94,42 @@ module Eneroth
           "imageHeightField.value = "\
           "#{ScaledPerspective.image_height.to_s.to_json};"\
           "imageHeightField.disabled = "\
-          "#{!ScaledPerspective.can_set_image_height?};"\
+          "#{!ScaledPerspective.can_set_image_height?};"
         )
       end
       private_class_method :update_dialog
+
+      def self.scale=(scale)
+        # TODO: Show red border on field if invalid.
+        scale = Scale.new(scale)
+        return unless scale.valid?
+        ScaledPerspective.scale = scale
+
+        @dialog.execute_script(
+          "viewDistanceField.value = "\
+          "#{ScaledPerspective.viewing_distance.to_s.to_json};"\
+          "imageHeightField.value = "\
+          "#{ScaledPerspective.image_height.to_s.to_json};"
+        )
+      end
+      private_class_method :scale=
+
+      def self.viewing_distance=(viewing_distance)
+        # TODO: Show red border on field if invalid.
+        ScaledPerspective.viewing_distance = viewing_distance.to_l
+
+        @dialog.execute_script(
+          "imageHeightField.value = "\
+          "#{ScaledPerspective.image_height.to_s.to_json};"
+        )
+      end
+      private_class_method :scale=
+
+      def self.image_height=(image_height)
+        # TODO: Show red border on field if invalid.
+        ScaledPerspective.image_height = image_height.to_l
+      end
+      private_class_method :image_height=
     end
   end
 end
