@@ -26,6 +26,10 @@ module Eneroth
       def deactivate(view)
         super
         view.invalidate
+
+        # As #draw is used kind of like a view observer, deactivating the tool
+        # makes the dialog stop updating.
+        Dialog.hide
       end
 
       # @api
@@ -44,8 +48,6 @@ module Eneroth
 
         # HACK: Probably not idiomatic but using Tool#draw as a view observer
         # to update dialog.
-        # TODO: Close dialog if tool is deactivated? (as it is used as observer)
-        # Deactivate tool when dialog closes.
         Dialog.on_view_change if Dialog.visible?
       end
 
