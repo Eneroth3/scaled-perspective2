@@ -46,6 +46,7 @@ module Eneroth
       # @return [Length, nil]
       def self.viewing_distance
         return unless @target
+        return unless camera.perspective?
 
         (target_distance * @scale.factor).to_l
       end
@@ -78,15 +79,22 @@ module Eneroth
       # Private
 
       def self.multiply_plane_extents(factor)
-        camera.fov =
-          Math.atan(Math.tan(camera.fov.degrees / 2) * factor).radians * 2
+        if camera.perspective?
+          camera.fov =
+            Math.atan(Math.tan(camera.fov.degrees / 2) * factor).radians * 2
+        else
+          camera.height *= factor
+        end
       end
       private_class_method :multiply_plane_extents
 
       def self.target_plane_height
-        # TODO: When fov_is_height? is false, corerct for it.
-        # TODO: Support parallel projection.
-        target_distance * Math.tan(camera.fov.degrees / 2) * 2
+        if camera.perspective?
+          # TODO: When fov_is_height? is false, corerct for it.
+          target_distance * Math.tan(camera.fov.degrees / 2) * 2
+        else
+          camera.height
+        end
       end
       private_class_method :target_plane_height
 
