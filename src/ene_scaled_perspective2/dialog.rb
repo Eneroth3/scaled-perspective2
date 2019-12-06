@@ -73,8 +73,20 @@ module Eneroth
       end
       private_class_method :create_dialog
 
+      # TODO: Let user enter values.
+      # When entering value in one field, don't update and overwrite as user is
+      # writing. Only update other fields.
+      # User feedback when invalid values are entered.
+
       def self.update_dialog
-        @dialog.execute_script("") # TODO: Set values.
+        @dialog.execute_script(
+          "scale = #{ScaledPerspective.scale.to_s.to_json};"\
+          "viewDistance = #{ScaledPerspective.viewing_distance.to_s.to_json};"\
+          "imageHeight = #{ScaledPerspective.image_height.to_s.to_json};"\
+          "canSetViewDistance =#{ScaledPerspective.can_set_viewing_distance?};"\
+          "canSetImageHeight = #{ScaledPerspective.can_set_image_height?};"\
+          "updateForm();"
+        )
       end
       private_class_method :update_dialog
     end
