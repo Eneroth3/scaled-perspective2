@@ -92,7 +92,14 @@ module Eneroth
           position.offset([20.mm, 20.mm]),
           Layout::FormattedText::ANCHOR_TYPE_TOP_LEFT
         )
-        # TODO: Add arrow when supported by API.
+
+        style = label.style
+        sub_style = style.get_sub_style(Layout::Style::LABEL_LEADER_LINE)
+        sub_style.start_arrow_type = Layout::Style::ARROW_FILLED_TRIANGLE
+        sub_style.start_arrow_size = 1
+        sub_style.end_arrow_size = 1
+        style.set_sub_style(Layout::Style::LABEL_LEADER_LINE, sub_style)
+        label.style = style
 
         doc.add_entity(label, doc.layers.active, doc.pages.first)
       end
