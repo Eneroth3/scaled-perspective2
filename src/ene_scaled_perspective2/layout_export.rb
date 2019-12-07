@@ -37,8 +37,8 @@ module Eneroth
         viewport.preserve_scale_on_resize = true
         doc.add_entity(viewport, doc.layers.active, doc.pages.first)
 
-        point2d = viewport.model_to_paper_point(ScaledPerspective.target)
-        add_label(doc, ScaledPerspective.scale.to_s, point2d)
+        add_label(doc, viewport, ScaledPerspective.scale.to_s,
+                  ScaledPerspective.target)
 
         doc.save(lo_path)
         open_file(lo_path)
@@ -84,12 +84,15 @@ module Eneroth
         Geom::Bounds2d.new(left, top, width, height)
       end
 
-      def self.add_label(doc, text, position)
+      def self.add_label(doc, viewport, text, position)
+        lo_point = viewport.model_to_paper_point(position)
+        conenction_point = Layout::ConnectionPoint.new(viewport, position)
+
         label = Layout::Label.new(
           text,
           Layout::Label::LEADER_LINE_TYPE_SINGLE_SEGMENT,
-          position,
-          position.offset([20.mm, 20.mm]),
+          lo_point,
+          lo_point.offset([20.mm, 20.mm]),
           Layout::FormattedText::ANCHOR_TYPE_TOP_LEFT
         )
 
@@ -102,6 +105,7 @@ module Eneroth
         label.style = style
 
         doc.add_entity(label, doc.layers.active, doc.pages.first)
+        label.connect(conenction_point)
       end
 
       # Open file in the default program.
