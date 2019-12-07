@@ -67,6 +67,10 @@
         if (event.type == "keyup") triggeringField = this;
         sketchup.imageHeight(this.value);
       }
+
+      function sendToLayout() {
+        sketchup.sendToLayout();
+      }
     </script>
     <style>
       table {
@@ -111,7 +115,7 @@
         </tr>
         <tr>
           <td><button>Export Image</button></td>
-          <td><button>Send to LayOut</button></td>
+          <td><button onclick="sendToLayout();">Send to LayOut</button></td>
         </tr>
       </table>
     </div>
