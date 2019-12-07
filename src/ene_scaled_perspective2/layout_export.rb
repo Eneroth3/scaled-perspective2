@@ -41,8 +41,7 @@ module Eneroth
         add_label(doc, ScaledPerspective.scale.to_s, point2d)
 
         doc.save(lo_path)
-        UI.openURL(lo_path)
-        # TODO: Test on Mac.
+        open_file(lo_path)
 
         Sketchup.status_text = "Opening LayOut..."
       end
@@ -96,6 +95,19 @@ module Eneroth
         # TODO: Add arrow when supported by API.
 
         doc.add_entity(label, doc.layers.active, doc.pages.first)
+      end
+
+      # Open file in the default program.
+      #
+      # @param path [String]
+      def self.open_file(path)
+        # Not tested on Mac yet but I think it works.
+        # https://forums.sketchup.com/t/open-generic-file-in-ruby/110543
+        if Sketchup.platform == :platform_win
+          UI.openURL(path)
+        else
+          system("open #{path.inspect}")
+        end
       end
     end
   end
