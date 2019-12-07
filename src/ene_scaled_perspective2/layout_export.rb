@@ -7,48 +7,41 @@ module Eneroth
     # Export scaled perspective to LayOut.
     module LayoutExport
       # Message asking user to save model.
-      SAVE_MSG =
-        "Your model must be saved before sending it to LayOut.\n\n"\
-        "Do you want to save your model now?".freeze
+      MSG_CONFIRM_SAVE =
+        "Your model will be saved before sending it to LayOut.\n\n"\
+        "Continue?".freeze
 
       def self.export
         model = Sketchup.active_model
-        return unless prompt_save?
 
+        # Saving over the user's file without consent would be unacceptable.
+        return unless UI.messagebox(MSG_CONFIRM_SAVE, MB_YESNO) == IDYES
+
+        # Gather all user input before carrying out any action, so no changes
+        # are made if the user cancels.
         lo_path = prompt_save_path
         return unless lo_path
 
-        # HACK: Set up dummy scene to reference from LO.
-        # When API supports it, the camera should be written directly to the
-        # LayOut viewport without littering the document.
-        #
-        # Don't set any particular name to the scene as the user can rename it.
-        # TODO: Confirm LO still references the right scene (PID based).
+        # TODO: Name scene "#{scale} view" with counter if needed.
         scene = model.pages.add
 
-        # TODO: If not already saved, show a save panel.
-        # FIXME: If model was already saved, then the newly created scene edits
-        # it and it is saved without the user's consent to overwrite file.
+        # TODO: If not already saved, show a save panel (but before LO
+        # save panel and instead of the prompt).
         model.save
 
-        # TODO: Base on template with reasonable defaults (mm, A4, grid etc).
-        doc = Layout::Document.new
-        # TODO: Set up bounds based on Scale.image_height and SU viewport ratio.
-        # Center on page. How large is page btw?
-        bounds = Geom::Bounds2d.new(1, 1, 3, 3)
-        viewport = Layout::SketchUpModel.new(model.path, bounds)
+        doc = Layout::Document.new("#{PLUGIN_ROOT}/template.layout")
+        viewport = Layout::SketchUpModel.new(model.path, image_bounds(doc))
         # Scene indexing starts at 1 in LayOut (with 9 being last saved view).
-        # TODO: File documentation issue that 1 is the first scene.
+        # See https://github.com/SketchUp/api-issue-tracker/issues/399
         viewport.current_scene = model.pages.to_a.index(scene) +1
         viewport.preserve_scale_on_resize = true
-        doc.add_entity(viewport, doc.layers.first, doc.pages.first)
+        doc.add_entity(viewport, doc.layers.active, doc.pages.first)
 
-        # TODO: Add text pointing where scale applies.
-        # viewport.model_to_paper_point(model_point)
+        point2d = viewport.model_to_paper_point(ScaledPerspective.target)
+        add_label(doc, ScaledPerspective.scale.to_s, point2d)
 
         doc.save(lo_path)
         UI.openURL(lo_path)
-        # TODO: Test if it can be opened when there is already an opened document.
         # TODO: Test on Mac.
 
         Sketchup.status_text = "Opening LayOut..."
@@ -56,13 +49,6 @@ module Eneroth
 
       # Private
       # TODO: Mark as private
-
-      def self.prompt_save?
-        model = Sketchup.active_model
-        return true if !model.path.empty? && !model.modified?
-
-        UI.messagebox(SAVE_MSG, MB_YESNO) == IDYES
-      end
 
       def self.prompt_save_path
         model = Sketchup.active_model
@@ -75,6 +61,30 @@ module Eneroth
         path += ".layout" unless path.end_with?(".layout")
 
         path
+      end
+
+      def self.image_bounds(doc)
+        model = Sketchup.active_model
+
+        height = ScaledPerspective.image_height
+        width = height / model.active_view.vpheight * model.active_view.vpwidth
+        left = doc.page_info.width / 2 - width / 2
+        top = doc.page_info.height / 2 - height / 2
+
+        Geom::Bounds2d.new(left, top, width, height)
+      end
+
+      def self.add_label(doc, text, position)
+        label = Layout::Label.new(
+          text,
+          Layout::Label::LEADER_LINE_TYPE_SINGLE_SEGMENT,
+          position,
+          position.offset([20.mm, 20.mm]),
+          Layout::FormattedText::ANCHOR_TYPE_TOP_LEFT
+        )
+        # TODO: Add arrow when supported by API.
+
+        doc.add_entity(label, doc.layers.active, doc.pages.first)
       end
     end
   end
