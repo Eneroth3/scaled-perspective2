@@ -35,11 +35,7 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def draw(view)
-        if @ip_picked.valid?
-          draw_plane(@ip_picked.position)
-        elsif @ip_pick.valid?
-          draw_plane(@ip_pick.position)
-        end
+        draw_plane if @ip_picked.valid? || @ip_pick.valid?
 
         @ip_pick.draw(view)
         @ip_picked.draw(view)
@@ -51,7 +47,12 @@ module Eneroth
         Dialog.on_view_change if Dialog.visible?
       end
 
-      # TODO: Add getExtents.
+      def getExtents
+        bb = Sketchup.active_model.bounds
+        bb.add(plane_corners) if @ip_picked.valid? || @ip_pick.valid?
+
+        bb
+      end
 
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
@@ -94,17 +95,30 @@ module Eneroth
 
       private
 
-      def draw_plane(point)
+      def draw_plane
         # TODO: Draw fancy checkered pattern.
         view = Sketchup.active_model.active_view
-        plane = [point, view.camera.direction]
+        points = plane_corners
+        view.drawing_color = COLOR
+        view.draw(GL_QUADS, points)
+      end
+
+      def plane_corners
+        view = Sketchup.active_model.active_view
         points = Array.new(4) do |i|
           Geom.intersect_line_plane(view.pickray(view.corner(i)), plane)
         end
-        points[0], points[1] = points[1], points[0]
 
-        view.drawing_color = COLOR
-        view.draw(GL_QUADS, points)
+        points.values_at(0, 1, 3, 2)
+      end
+
+      # Only valid if at leas one InputPoint is valid.
+      # If a point has been selected, use it. Otherwise use point being picked.
+      def plane
+        view = Sketchup.active_model.active_view
+        point = @ip_picked.valid? ? @ip_picked.position : @ip_pick.position
+
+        [point, view.camera.direction]
       end
 
       def update_status_text
