@@ -68,6 +68,10 @@
         sketchup.imageHeight(this.value);
       }
 
+      function pdfExport() {
+        sketchup.pdfExport();
+      }
+
       function sendToLayout() {
         sketchup.sendToLayout();
       }
@@ -114,7 +118,7 @@
           <td><input id="imageHeight" type="text" /></td>
         </tr>
         <tr>
-          <td><button>Export Image</button></td>
+          <td><button onclick="pdfExport()">Export PDF</button></td>
           <td><button onclick="sendToLayout();">Send to LayOut</button></td>
         </tr>
       </table>
