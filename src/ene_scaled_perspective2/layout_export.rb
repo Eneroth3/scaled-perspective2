@@ -16,22 +16,26 @@ module Eneroth
         model = Sketchup.active_model
 
         # Saving over the user's file without consent would be unacceptable.
+        # Phrasing differs lightly from the native "Do you want to save the
+        # model now?" as some changes are actually carried out before saving.
         return unless UI.messagebox(MSG_CONFIRM_SAVE, MB_YESNO) == IDYES
 
-        # Gather all user input before carrying out any action, so no changes
-        # are made if the user cancels.
-        lo_path = prompt_save_path
+        su_path = model.path.empty? ? su_save_panel : model.path
+        return unless su_path
+
+        lo_path = lo_save_panel(su_path)
         return unless lo_path
+
+        # Gather all user input before carrying out changes, so no changes
+        # are made if the user cancels.
 
         scene_name = "#{ScaledPerspective.scale} View"
         scene = model.pages.add(unique_scene_name(scene_name, model))
 
-        # TODO: If not already saved, show a save panel (but before LO
-        # save panel and instead of the prompt).
-        model.save
+        model.save(su_path)
 
         doc = Layout::Document.new("#{PLUGIN_ROOT}/template.layout")
-        viewport = Layout::SketchUpModel.new(model.path, image_bounds(doc))
+        viewport = Layout::SketchUpModel.new(su_path, image_bounds(doc))
         # Scene indexing starts at 1 in LayOut (with 0 being last saved view).
         # See https://github.com/SketchUp/api-issue-tracker/issues/399
         viewport.current_scene = model.pages.to_a.index(scene) + 1
@@ -49,19 +53,24 @@ module Eneroth
 
       # Private
 
-      def self.prompt_save_path
-        model = Sketchup.active_model
-        filename = "#{File.basename(model.path, '.skp')}.layout"
-        dirname = File.dirname(model.path)
+      def self.su_save_panel
+        path = UI.savepanel("Save As")
+        return unless path
+
+        path.end_with?(".skp") ? path : "#{path}.skp"
+      end
+      private_class_method :su_save_panel
+
+      def self.lo_save_panel(su_path)
+        filename = "#{File.basename(su_path, '.skp')}.layout"
+        dirname = File.dirname(su_path)
 
         path = UI.savepanel("Create LayOut Document", dirname, filename)
         return unless path
 
-        path += ".layout" unless path.end_with?(".layout")
-
-        path
+        path.end_with?(".layout") ? path : "#{path}.layout"
       end
-      private_class_method :prompt_save_path
+      private_class_method :lo_save_panel
 
       def self.unique_scene_name(basename, model)
         return basename unless model.pages[basename]
