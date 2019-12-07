@@ -22,8 +22,8 @@ module Eneroth
         lo_path = prompt_save_path
         return unless lo_path
 
-        # TODO: Name scene "#{scale} view" with counter if needed.
-        scene = model.pages.add
+        scene_name = "#{ScaledPerspective.scale} View"
+        scene = model.pages.add(unique_scene_name(scene_name, model))
 
         # TODO: If not already saved, show a save panel (but before LO
         # save panel and instead of the prompt).
@@ -61,6 +61,17 @@ module Eneroth
         path += ".layout" unless path.end_with?(".layout")
 
         path
+      end
+
+      def self.unique_scene_name(basename, model)
+      return basename unless model.pages[basename]
+
+      count = 1
+      loop do
+        name = "#{basename} #{count}"
+        return name unless model.pages[name]
+        count += 1
+      end
       end
 
       def self.image_bounds(doc)
