@@ -11,6 +11,7 @@ module Eneroth
         "Your model will be saved before sending it to LayOut.\n\n"\
         "Continue?".freeze
 
+      # Send current view to a LayOut document.
       def self.export
         model = Sketchup.active_model
 
@@ -33,7 +34,7 @@ module Eneroth
         viewport = Layout::SketchUpModel.new(model.path, image_bounds(doc))
         # Scene indexing starts at 1 in LayOut (with 0 being last saved view).
         # See https://github.com/SketchUp/api-issue-tracker/issues/399
-        viewport.current_scene = model.pages.to_a.index(scene) +1
+        viewport.current_scene = model.pages.to_a.index(scene) + 1
         viewport.preserve_scale_on_resize = true
         doc.add_entity(viewport, doc.layers.active, doc.pages.first)
 
@@ -47,7 +48,6 @@ module Eneroth
       end
 
       # Private
-      # TODO: Mark as private
 
       def self.prompt_save_path
         model = Sketchup.active_model
@@ -61,17 +61,20 @@ module Eneroth
 
         path
       end
+      private_class_method :prompt_save_path
 
       def self.unique_scene_name(basename, model)
-      return basename unless model.pages[basename]
+        return basename unless model.pages[basename]
 
-      count = 1
-      loop do
-        name = "#{basename} #{count}"
-        return name unless model.pages[name]
-        count += 1
+        count = 1
+        loop do
+          name = "#{basename} #{count}"
+          return name unless model.pages[name]
+
+          count += 1
+        end
       end
-      end
+      private_class_method :unique_scene_name
 
       def self.image_bounds(doc)
         model = Sketchup.active_model
@@ -83,6 +86,7 @@ module Eneroth
 
         Geom::Bounds2d.new(left, top, width, height)
       end
+      private_class_method :image_bounds
 
       def self.add_label(doc, text, position)
         label = Layout::Label.new(
@@ -103,19 +107,19 @@ module Eneroth
 
         doc.add_entity(label, doc.layers.active, doc.pages.first)
       end
+      private_class_method :add_label
 
       # Open file in the default program.
       #
       # @param path [String]
       def self.open_file(path)
-        # Not tested on Mac yet but I think it works.
-        # https://forums.sketchup.com/t/open-generic-file-in-ruby/110543
         if Sketchup.platform == :platform_win
           UI.openURL(path)
         else
           system("open #{path.inspect}")
         end
       end
+      private_class_method :open_file
     end
   end
 end

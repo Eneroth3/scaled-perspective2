@@ -4,11 +4,11 @@ AllCops:
   DisplayCopNames: true
   Exclude:
     - 'src/*/vendor/**/*'
-  # Should really be Ruby 2.2.4 for SketchUp 2017 but Rubocop has dropped that
+  # Should really be Ruby 2.2.4 for SketchUp 2018 but Rubocop has dropped that
   # option.
   TargetRubyVersion: 2.3
   SketchUp:
-    TargetSketchUpVersion: 2017
+    TargetSketchUpVersion: 2018
 
 # Too noisy. Rely on MethodLength instead.
 Metrics/AbcSize:
@@ -174,6 +174,10 @@ Style/DoubleNegation:
 
 # Not available in SketchUp 2018 and 2017 (Ruby 2.2.4).
 Style/SafeNavigation:
+  Enabled: false
+
+# == 0 reads as good as .zero?
+Style/NumericPredicate:
   Enabled: false
 
 # Single quotes being faster is hardly measurable and only affects parse time.

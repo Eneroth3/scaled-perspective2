@@ -18,9 +18,6 @@ module Eneroth
           @dialog.set_url("#{PLUGIN_ROOT}/dialog.html")
           attach_callbacks
           @dialog.show
-
-          ### Observers.observe_app
-          ### @dialog.set_on_closed { Observers.unobserve_app }
         end
       end
 
@@ -58,8 +55,12 @@ module Eneroth
       def self.attach_callbacks
         @dialog.add_action_callback("ready") { update_dialog }
         @dialog.add_action_callback("scale") { |_, v| self.scale = v }
-        @dialog.add_action_callback("viewDistance") { |_, v| self.viewing_distance = v }
-        @dialog.add_action_callback("imageHeight") { |_, v| self.image_height = v }
+        @dialog.add_action_callback("viewDistance") do |_, viewing_distance|
+          self.viewing_distance = viewing_distance
+        end
+        @dialog.add_action_callback("imageHeight") do |_, image_height|
+          self.image_height = image_height
+        end
         @dialog.add_action_callback("sendToLayout") { LayoutExport.export }
       end
       private_class_method :attach_callbacks
