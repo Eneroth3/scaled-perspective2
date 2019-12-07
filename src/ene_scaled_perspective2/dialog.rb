@@ -62,6 +62,11 @@ module Eneroth
           self.image_height = image_height
         end
         @dialog.add_action_callback("sendToLayout") { LayoutExport.export }
+        @dialog.set_on_closed do
+          # REVIEW: Technically this makes this module dependent on the tool.
+          # More idiomatic to attach a callback.
+          Sketchup.active_model.tools.pop_tool if ScaledPlaneTool.active?
+        end
       end
       private_class_method :attach_callbacks
 
