@@ -31,7 +31,7 @@ module Eneroth
 
         doc = Layout::Document.new("#{PLUGIN_ROOT}/template.layout")
         viewport = Layout::SketchUpModel.new(model.path, image_bounds(doc))
-        # Scene indexing starts at 1 in LayOut (with 9 being last saved view).
+        # Scene indexing starts at 1 in LayOut (with 0 being last saved view).
         # See https://github.com/SketchUp/api-issue-tracker/issues/399
         viewport.current_scene = model.pages.to_a.index(scene) +1
         viewport.preserve_scale_on_resize = true
