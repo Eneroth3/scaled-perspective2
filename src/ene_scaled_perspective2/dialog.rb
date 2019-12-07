@@ -49,7 +49,7 @@ module Eneroth
 
       # Expected to be called when view changes.
       def self.on_view_change
-        update_dialog
+        update_dialog if visible?
       end
 
       # Private
