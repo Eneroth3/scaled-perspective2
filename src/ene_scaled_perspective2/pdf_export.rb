@@ -35,11 +35,14 @@ module Eneroth
       private_class_method :pdf_save_panel
 
       def self.settings_hash
-        # TODO: Rely on style for extensions, profiles etc.
+        # REVIEW: Set profile, sections etc properties explicitly from model
+        # style instead of using the exporter's defaults?
         {
-          line_width: 40,
-          height_units: Length::Millimeter, # TODO: Inches if imperial.
-          window_height: ScaledPerspective.image_height.mm # FIXME: Not honored. Instead value from last export is used.
+          # Exporter appears to only support inches
+          # (or use other identifiers that these constants).
+          height_units: Length::Inches,
+          # Exporter appears to only accept floats.
+          window_height: ScaledPerspective.image_height.to_f
         }
       end
       private_class_method :settings_hash
