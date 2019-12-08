@@ -42,8 +42,10 @@ module Eneroth
         viewport.preserve_scale_on_resize = true
         doc.add_entity(viewport, doc.layers.active, doc.pages.first)
 
-        point2d = viewport.model_to_paper_point(ScaledPerspective.target)
-        add_label(doc, ScaledPerspective.scale.to_s, point2d)
+        if model.active_view.camera.perspective?
+          point2d = viewport.model_to_paper_point(ScaledPerspective.target)
+          add_label(doc, ScaledPerspective.scale.to_s, point2d)
+        end
 
         doc.save(lo_path)
         open_file(lo_path)

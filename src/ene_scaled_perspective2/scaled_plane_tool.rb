@@ -18,6 +18,12 @@ module Eneroth
         @ip_pick = Sketchup::InputPoint.new
         @ip_picked = Sketchup::InputPoint.new
 
+        # No need o pick a plane in parallel projection.
+        unless Sketchup.active_model.active_view.camera.perspective?
+          Dialog.show
+          return
+        end
+
         update_status_text
       end
 
@@ -35,6 +41,9 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def draw(view)
+        # No need o pick a plane in parallel projection.
+        return unless view.camera.perspective?
+
         draw_plane if @ip_picked.valid? || @ip_pick.valid?
 
         @ip_pick.draw(view)
@@ -57,6 +66,9 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def onCancel(_reason, view)
+        # No need o pick a plane in parallel projection.
+        return unless view.camera.perspective?
+
         @ip_picked.clear
         ScaledPerspective.target = nil
         view.invalidate
@@ -65,6 +77,9 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def onLButtonDown(_flags, _x, _y, view)
+        # No need o pick a plane in parallel projection.
+        return unless view.camera.perspective?
+
         return unless @ip_pick.valid?
 
         @ip_picked.copy!(@ip_pick)
@@ -76,6 +91,9 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def onMouseMove(_flags, x, y, view)
+        # No need o pick a plane in parallel projection.
+        return unless view.camera.perspective?
+
         @ip_pick.pick(view, x, y)
         view.invalidate
       end
@@ -83,6 +101,9 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def resume(view)
+        # No need o pick a plane in parallel projection.
+        return unless view.camera.perspective?
+
         view.invalidate
         update_status_text
       end
@@ -90,6 +111,9 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def suspend(view)
+        # No need o pick a plane in parallel projection.
+        return unless view.camera.perspective?
+
         view.invalidate
       end
 
