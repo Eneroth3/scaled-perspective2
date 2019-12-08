@@ -3,6 +3,7 @@
 module Eneroth
   module ScaledPerspective2
     Sketchup.require "#{PLUGIN_ROOT}/scaled_perspective"
+    Sketchup.require "#{PLUGIN_ROOT}/file_ui"
 
     # Export scaled perspective to LayOut.
     module LayoutExport
@@ -48,7 +49,7 @@ module Eneroth
         end
 
         doc.save(lo_path)
-        open_file(lo_path)
+        FileUI.open(lo_path)
 
         Sketchup.status_text = "Opening LayOut..."
       end
@@ -59,7 +60,7 @@ module Eneroth
         path = UI.savepanel("Save As")
         return unless path
 
-        path.end_with?(".skp") ? path : "#{path}.skp"
+        FileUI.assure_extension(path, ".skp")
       end
       private_class_method :su_save_panel
 
@@ -70,7 +71,7 @@ module Eneroth
         path = UI.savepanel("Create LayOut Document", dirname, filename)
         return unless path
 
-        path.end_with?(".layout") ? path : "#{path}.layout"
+        FileUI.assure_extension(path, ".layout")
       end
       private_class_method :lo_save_panel
 
@@ -119,18 +120,6 @@ module Eneroth
         doc.add_entity(label, doc.layers.active, doc.pages.first)
       end
       private_class_method :add_label
-
-      # Open file in the default program.
-      #
-      # @param path [String]
-      def self.open_file(path)
-        if Sketchup.platform == :platform_win
-          UI.openURL(path)
-        else
-          system("open #{path.inspect}")
-        end
-      end
-      private_class_method :open_file
     end
   end
 end

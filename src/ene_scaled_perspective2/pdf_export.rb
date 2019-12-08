@@ -3,6 +3,7 @@
 module Eneroth
   module ScaledPerspective2
     Sketchup.require "#{PLUGIN_ROOT}/scaled_perspective"
+    Sketchup.require "#{PLUGIN_ROOT}/file_ui"
 
     # Export scaled perspective to PDF.
     module PDFExport
@@ -19,7 +20,7 @@ module Eneroth
           Sketchup.platform == :platform_win ? win_settings : mac_settings
         )
 
-        open_file(path)
+        FileUI.open(path)
       end
 
       # Private
@@ -31,7 +32,7 @@ module Eneroth
         path = UI.savepanel("Export PDF", dirname, filename)
         return unless path
 
-        path.end_with?(".pdf") ? path : "#{path}.pdf"
+        FileUI.assure_extension(path, ".pdf")
       end
       private_class_method :pdf_save_panel
 
@@ -59,19 +60,6 @@ module Eneroth
         }
       end
       private_class_method :mac_settings
-
-      # Open file in the default program.
-      #
-      # @param path [String]
-      def self.open_file(path)
-        # TODO: Copied from LayoutExport. Define only once!
-        if Sketchup.platform == :platform_win
-          UI.openURL(path)
-        else
-          system("open #{path.inspect}")
-        end
-      end
-      private_class_method :open_file
     end
   end
 end
