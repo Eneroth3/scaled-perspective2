@@ -12,10 +12,9 @@ module Eneroth
         path = pdf_save_panel(model.path)
         return unless path
 
-        # TODO: Add Mac support (uses different exporter settings).
         model.export(
           path,
-          settings_hash
+          Sketchup.platform == :platform_win ? win_settings : mac_settings
         )
 
         open_file(path)
@@ -34,18 +33,30 @@ module Eneroth
       end
       private_class_method :pdf_save_panel
 
-      def self.settings_hash
+      def self.win_settings
         # REVIEW: Set profile, sections etc properties explicitly from model
         # style instead of using the exporter's defaults?
         {
           # Exporter appears to only support inches
           # (or use other identifiers that these constants).
-          height_units: Length::Inches,
+          height_units:  Length::Inches,
           # Exporter appears to only accept floats.
           window_height: ScaledPerspective.image_height.to_f
         }
       end
-      private_class_method :settings_hash
+      private_class_method :win_settings
+
+      def self.mac_settings
+        # Not tested. Assuming dimensions are in inches and width is set to
+        # match viewport aspect ratio.
+        # See https://forums.sketchup.com/t/does-the-pdf-exporter-even-accept-
+        #     settings/110582/3
+        {
+          imageHeight: 200.mm.to_f
+          ### imageWidth: 200.mm.to_f
+        }
+      end
+      private_class_method :mac_settings
 
       # Open file in the default program.
       #
