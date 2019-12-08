@@ -156,7 +156,7 @@ module Eneroth
       # Check if view has actually changed since last call to on_view_change.
       def self.view_changed?
         return true if @cached_v_distance != ScaledPerspective.viewing_distance
-        return true if @cached_image_height == ScaledPerspective.image_height
+        return true if @cached_image_height != ScaledPerspective.image_height
 
         false
       end
