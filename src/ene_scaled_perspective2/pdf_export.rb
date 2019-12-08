@@ -13,14 +13,12 @@ module Eneroth
         return unless path
 
         # TODO: Add Mac support (uses different exporter settings).
-        # TODO: Rely on style for extensions, profiles etc.
         model.export(
           path,
-          height_units: Length::Millimeter, # TODO: Inches if imperial.
-          window_height: ScaledPerspective.image_height.mm # FIXME: Not honored. Instead value from last export is used.
+          settings_hash
         )
 
-        # Some kind of feedback after export.
+        open_file(path)
       end
 
       # Private
@@ -35,6 +33,29 @@ module Eneroth
         path.end_with?(".pdf") ? path : "#{path}.pdf"
       end
       private_class_method :pdf_save_panel
+
+      def self.settings_hash
+        # TODO: Rely on style for extensions, profiles etc.
+        {
+          line_width: 40,
+          height_units: Length::Millimeter, # TODO: Inches if imperial.
+          window_height: ScaledPerspective.image_height.mm # FIXME: Not honored. Instead value from last export is used.
+        }
+      end
+      private_class_method :settings_hash
+
+      # Open file in the default program.
+      #
+      # @param path [String]
+      def self.open_file(path)
+        # TODO: Copied from LayoutExport. Define only once!
+        if Sketchup.platform == :platform_win
+          UI.openURL(path)
+        else
+          system("open #{path.inspect}")
+        end
+      end
+      private_class_method :open_file
     end
   end
 end
