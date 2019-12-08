@@ -9,6 +9,12 @@ module Eneroth
 
     # Dialog for handling scaled perspective settings.
     module Dialog
+      # Viewing distance on last view update.
+      @cached_v_distance ||= nil
+
+      # Image height on last view update.
+      @cached_image_height ||= nil
+
       # Show dialog.
       def self.show
         if visible?
@@ -47,7 +53,13 @@ module Eneroth
 
       # Expected to be called when view changes.
       def self.on_view_change
-        update_dialog if visible?
+        return unless visible?
+        return unless view_changed?
+
+        @cached_v_distance = ScaledPerspective.image_height
+        @cached_image_height = ScaledPerspective.viewing_distance
+
+        update_dialog
       end
 
       # Private
@@ -138,6 +150,15 @@ module Eneroth
         ScaledPerspective.image_height = image_height
       end
       private_class_method :image_height=
+
+      # Check if view has actually changed since last call to on_view_change.
+      def self.view_changed?
+        return true if @cached_v_distance != ScaledPerspective.viewing_distance
+        return true if @cached_image_height == ScaledPerspective.image_height
+
+        false
+      end
+      private_class_method :view_changed?
     end
   end
 end
