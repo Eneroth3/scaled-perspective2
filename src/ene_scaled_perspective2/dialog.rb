@@ -5,6 +5,7 @@ require "json"
 module Eneroth
   module ScaledPerspective2
     Sketchup.require "#{PLUGIN_ROOT}/scaled_perspective"
+    Sketchup.require "#{PLUGIN_ROOT}/pdf_export"
     Sketchup.require "#{PLUGIN_ROOT}/layout_export"
 
     # Dialog for handling scaled perspective settings.
@@ -73,6 +74,7 @@ module Eneroth
         @dialog.add_action_callback("imageHeight") do |_, image_height|
           self.image_height = image_height
         end
+        @dialog.add_action_callback("pdfExport") { PDFExport.export }
         @dialog.add_action_callback("sendToLayout") { LayoutExport.export }
         @dialog.set_on_closed do
           # REVIEW: Technically this makes this module dependent on the tool.
