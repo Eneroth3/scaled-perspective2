@@ -7,6 +7,8 @@
     <script src="vendor/dialogs/controls.js"></script>
     <link rel="stylesheet" type="text/css" href="vendor/dialogs/style.css">
     <script>
+      var loaded = false;
+
       // Disable context menu.
       // TODO: Enable diable.
       // window.oncontextmenu = function (e) { e.preventDefault() };
@@ -24,6 +26,8 @@
       var triggeringField;
 
       function updateFields(scale, viewDistance, imageHeight, viewDistanceDisabled, imageHeightDisabled) {
+        if (!loaded) return;
+
         if (triggeringField != scaleField) scaleField.value = scale;
         if (triggeringField != viewDistanceField) viewDistanceField.value = viewDistance;
         if (triggeringField != imageHeightField) imageHeightField.value = imageHeight;
@@ -49,6 +53,8 @@
         scaleField.onchange = scaleField.onkeyup = setScale;
         viewDistanceField.onchange = viewDistanceField.onkeyup = setViewDistance;
         imageHeightField.onchange = imageHeightField.onkeyup = setImageHeight;
+
+        loaded = true;
 
         sketchup.ready();
       };
