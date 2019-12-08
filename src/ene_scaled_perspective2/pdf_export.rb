@@ -12,6 +12,8 @@ module Eneroth
         path = pdf_save_panel(model.path)
         return unless path
 
+        Sketchup.status_text = "Exporting PDF..."
+
         model.export(
           path,
           Sketchup.platform == :platform_win ? win_settings : mac_settings
