@@ -105,7 +105,7 @@ module Eneroth
           "#{ScaledPerspective.viewing_distance.to_s.to_json},"\
           "#{ScaledPerspective.image_height.to_s.to_json},"\
           "#{!ScaledPerspective.can_set_viewing_distance?},"\
-          "#{!ScaledPerspective.can_set_image_height?},"\
+          "#{!ScaledPerspective.can_set_image_height?}"\
           ");"
         )
       end
