@@ -16,6 +16,8 @@ e.g. when producing consistent views.
 
 Activated from **Extensions > Eneroth Scaled perspective²**.
 
+Source code available at [GitHub](https://github.com/Eneroth3/scaled-perspective2).
+
 ## Known Issues
 
 On Mac the PDF isn't exported to scale but to an arbitrary size.
