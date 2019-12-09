@@ -8,10 +8,10 @@ module Eneroth
     # Tool for picking plane to apply scale to.
     class ScaledPlaneTool < Tool
       # Dark color for target plane.
-      DARK_COLOR = Sketchup::Color.new(127, 127, 127, 0.6)
+      DARK_COLOR = Sketchup::Color.new(127, 127, 127, 0.2)
 
       # Light color for target plane.
-      LIGHT_COLOR = Sketchup::Color.new(255, 255, 255, 0.6)
+      LIGHT_COLOR = Sketchup::Color.new(255, 255, 255, 0.2)
 
       # Size of grid in logical pixels.
       GRID_SIZE = 40
