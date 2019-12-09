@@ -209,7 +209,7 @@ class Eneroth::ScaledPerspective2::Scale
       match[1].to_f
     elsif (match = string.match(/^(\d*\.?\d*)%$/))
       match[1].to_f / 100
-    elsif (match = string.match(/^(\d*\.?\d*):(\d*\.?\d*)$/))
+    elsif (match = string.match(/^(\d*\.?\d*)[:\/](\d*\.?\d*)$/))
       match[1].to_f / match[2].to_f
     elsif (match = string.match(/^(.+)\=(.+)$/))
       match[1].strip.to_l / match[2].strip.to_l
