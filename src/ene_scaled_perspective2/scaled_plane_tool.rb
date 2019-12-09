@@ -7,8 +7,11 @@ module Eneroth
 
     # Tool for picking plane to apply scale to.
     class ScaledPlaneTool < Tool
-      # Color to draw plane with.
-      COLOR = Sketchup::Color.new(127, 127, 127, 0.6)
+      # Dark color for target plane.
+      DARK_COLOR = Sketchup::Color.new(127, 127, 127, 0.6)
+
+      # Light color for target plane.
+      LIGHT_COLOR = Sketchup::Color.new(255, 255, 255, 0.6)
 
       # Size of grid in logical pixels.
       GRID_SIZE = 40
@@ -123,35 +126,30 @@ module Eneroth
       private
 
       def draw_plane
-        # TODO: Draw fancy checkered pattern.
         view = Sketchup.active_model.active_view
-        points = plane_corners.values_at(0, 1, 3, 2)
-        view.drawing_color = COLOR
-        view.draw(GL_QUADS, points)
-
-        # TEST CODE
         transformation = screen_to_plane
-        points = [
-          Geom::Point3d.new(0, 0, 0),
-          Geom::Point3d.new(100, 200, 0),
-          Geom::Point3d.new(200, 200, 0)
-        ]
 
-        # To 3d space
-        points.map! { |pt| pt.transform(transformation) }
+        cols = (view.vpwidth.to_f / GRID_SIZE).ceil
+        rows = (view.vpheight.to_f / GRID_SIZE).ceil
 
-        # To screen space anew
-        ### points.map! { |pt| view.screen_coords(pt) }
+        points = Array.new(rows + 1) do |row|
+          Array.new(cols + 1) do |col|
+            Geom::Point3d.new(col * GRID_SIZE, row * GRID_SIZE, 0)
+                         .transform(transformation)
+          end
+        end
 
-        p points
-        p points.map { |pt| pt.on_plane?(plane) }
-
-        view.drawing_color = "red"
-        view.line_width = 10
-        ### view.draw2d(GL_LINE_STRIP, points)
-        view.line_stipple = ""
-        view.draw(GL_LINE_STRIP, points)
-        # Some weird Z-fighting with quad, but works otherwise.
+        rows.times do |row|
+          cols.times do |col|
+            view.drawing_color = row % 2 == col % 2 ? DARK_COLOR : LIGHT_COLOR
+            view.draw(GL_QUADS, [
+              points[row][col],
+              points[row][col + 1],
+              points[row + 1][col + 1],
+              points[row + 1][col]
+            ])
+          end
+        end
       end
 
       # Transformation for converting logical screen coordinates to scale plane
@@ -182,7 +180,7 @@ module Eneroth
       def plane_corners
         view = Sketchup.active_model.active_view
 
-        points = Array.new(4) do |i|
+        Array.new(4) do |i|
           Geom.intersect_line_plane(view.pickray(view.corner(i)), plane)
         end
       end
