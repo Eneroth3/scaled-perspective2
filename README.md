@@ -15,3 +15,9 @@ may be used to control the exact vanishing point of the perspective,
 e.g. when producing consistent views.
 
 Activated from **Extensions > Eneroth Scaled perspective²**.
+
+## Known Issues
+
+On Mac the PDF isn't exported to scale but to an arbitrary size.
+Instead you can use SketchUp's native PDF exporter and manually set image height
+in the export options to the same height Eneroth Scaled Perspectives² uses.
