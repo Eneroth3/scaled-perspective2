@@ -29,10 +29,18 @@ module Eneroth
     unless @loaded
       @loaded = true
 
+      menu = UI.menu("Plugins")
+      toolbar = UI::Toolbar.new(EXTENSION.name)
+
       cmd = UI::Command.new(EXTENSION.name) { ScaledPlaneTool.activate }
       cmd.set_validation_proc { ScaledPlaneTool.command_state }
+      cmd.tooltip = EXTENSION.name
+      cmd.status_bar_text = EXTENSION.description
+      cmd.large_icon = cmd.small_icon = "#{PLUGIN_ROOT}/images/icon.svg"
+      menu.add_item(cmd)
+      toolbar.add_item(cmd)
 
-      UI.menu("Plugins").add_item(cmd)
+      toolbar.restore
     end
   end
 end
