@@ -37,15 +37,18 @@ module Eneroth
       private_class_method :pdf_save_panel
 
       def self.win_settings
-        # REVIEW: Set profile, sections etc properties explicitly from model
-        # style instead of using the exporter's defaults?
-        {
-          # Exporter appears to only support inches
-          # (or use other identifiers that these constants).
-          height_units:  Length::Inches,
-          # Exporter appears to only accept floats.
-          window_height: ScaledPerspective.image_height.to_f
-        }
+        if Sketchup.active_model.active_view.camera.perspective?
+          {
+            # Exporter appears to only accept floats, not lengths.
+            height_units: Length::Inches,
+            window_height: ScaledPerspective.image_height.to_f
+          }
+        else
+          {
+            length_in_drawing: ScaledPerspective.image_height.to_f,
+            length_in_model: Sketchup.active_model.active_view.camera.height.to_f
+          }
+        end
       end
       private_class_method :win_settings
 
